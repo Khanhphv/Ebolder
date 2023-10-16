@@ -128,10 +128,10 @@ class LevelController extends Controller
                 "name" => $request->name,
             ]);
             $level->Learn()->sync($request->lessons);
-            $level->Reading()->sync($request->readings);
-            $level->Vocabulary()->sync($request->vocabularies);
-            $level->Listen()->sync($request->listenings);
-            $level->Grammar()->sync($request->grammars);
+            $level->Reading()->sync($request->reading_id);
+            $level->Vocabulary()->sync($request->vocabulary_id);
+            $level->Listen()->sync($request->listening_id);
+            $level->Grammar()->sync($request->grammar_id);
             DB::commit();
             return response()->json([
                 "status" => 200,

@@ -53,15 +53,6 @@
                 </a>
             </li>
             @endcan
-            @can('Question_Vocabulary_List')
-            <li>
-                <a class="{{ request()->is(['admin/volabulary-level-test/question-list']) ? 'mm-active' : '' }}"
-                   href="{{ route('admin.vocabulary-question-list') }}">
-                    <i class="metismenu-icon fa-solid fa-clipboard-question"></i>
-                    Quản lý câu hỏi
-                </a>
-            </li>
-            @endcan
             @if(Gate::check('Listening_List') || Gate::check('Question_Listening_List'))
             <li class="app-sidebar__heading">Nghe</li>
             @endif

@@ -87,7 +87,7 @@
             </a>
           </div>
         </div>
-        <div
+        <!-- <div
           class="bg-white shadow-sm flex items-center justify-center cursor-pointer py-4 px-4 text-[14px] font-semibold"
           @click="show = !show"
         >
@@ -96,7 +96,20 @@
               <i class="el-icon-plus text-[20px]"></i>
             </div>
           </div>
-        </div>
+        </div> -->
+      </div>
+      <div class="mt-2 flex items-center justify-center"> 
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :total="total"
+          :current-page.sync="current"
+          :page-size="perPage"
+          @prev-click="paginateClick"
+          @next-click="paginateClick"
+          @current-change="paginateClick"
+        >
+        </el-pagination>
       </div>
     </div>
   </div>
@@ -137,11 +150,19 @@ export default {
         ],
       },
       isLoading: false,
+      total: 1,
+      current: 1,
+      pageSize: 1,
+      perPage: 1,
     };
   },
   computed: {},
   watch: {},
   methods: {
+    paginateClick(curentPage) {
+      this.current = curentPage;
+      this.getAllTopic();
+    },
     resetFeild() {
       this.show = false;
       this.topicData = {
@@ -185,12 +206,17 @@ export default {
     async getAllTopic() {
       try {
         this.isLoading = true;
-        let rs = await baseRequest.get(`/admin/list-topic-vocabulary`);
-        if (rs.data.status == 200) {
+        let result = await baseRequest.get(`/admin/list-topic-vocabulary?page=${this.current}`);
+        console.log(result.data);
+        if (result.data.status == 200) {
           setTimeout(() => {
             this.isLoading = false;
           }, 1000);
-          this.listTopic = rs.data.data;
+          this.listTopic = result.data.data.data;
+          this.total = result.data.data.total;
+          this.current = result.data.data.current_page;
+          this.pageSize = result.data.data.last_page;
+          this.perPage = result.data.data.per_page;
         }
       } catch (e) {
         setTimeout(() => {

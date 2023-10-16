@@ -426,7 +426,7 @@ export default {
       try {
         let rs = await baseRequest.get(`/admin/list-topic-vocabulary`);
         if (rs.data.status == 200) {
-          this.listTopicVocabulary = rs.data.data
+          this.listTopicVocabulary = rs.data.data.data
             .map((item) => ({
               id: item.id,
               name: item.name,

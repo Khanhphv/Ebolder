@@ -12,7 +12,15 @@
                         VOCABULARY LEVEL TEST
                     </div>
                 </div>
+                <div class="page-title-actions">
+                    <span class="btn-icon-wrapper pr-2">
+                        <a class="btn-icon btn dev-button btn-primary" href="{{route('admin.vocabulary-question-create')}}" style="padding: 10px 15px;">
+                            <i class="pe-7s-plus dev-icon btn-icon-wrapper " style="margin-top: -3px;"></i>Create New Question
+                        </a>
+                    </span>
+                </div>
             </div>
+            
         </div>
         <!---------------------     End head content section     --------------------->
         <!---------------------     Start main  section     --------------------->

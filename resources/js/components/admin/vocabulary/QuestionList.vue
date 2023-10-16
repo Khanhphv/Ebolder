@@ -386,6 +386,17 @@
                 </div>
             </div>
         </div>
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :total="total"
+          :current-page.sync="current"
+          :page-size="perPage"
+          @prev-click="paginateClick"
+          @next-click="paginateClick"
+          @current-change="paginateClick"
+        >
+        </el-pagination>
         <el-button
             type="primary"
             plain
@@ -425,6 +436,10 @@ export default {
                     },
                 ],
             },
+            total: 1,
+            current: 1,
+            pageSize: 1,
+            perPage: 1,
         };
     },
     computed: {},
@@ -434,6 +449,10 @@ export default {
         },
     },
     methods: {
+        paginateClick(curentPage) {
+            this.current = curentPage;
+            this.getAllData();
+        },
         takeMore(number) {
             this.take = this.take + number;
         },
@@ -550,6 +569,10 @@ export default {
                     }, 1000);
                     this.count = data.count;
                     this.dataQuestion = data.data;
+                    // this.total = result.data.data.total;
+                    // this.current = result.data.data.current_page;
+                    // this.pageSize = result.data.data.last_page;
+                    // this.perPage = result.data.data.per_page;
                 }
             } catch (error) {
                 setTimeout(() => {

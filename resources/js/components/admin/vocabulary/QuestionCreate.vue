@@ -24,6 +24,70 @@
         </div>
         <div class="container">
             <div class="flex flex-col justify-center w-full items-center">
+                <el-form :model="topicData" :rules="rules" ref="ruleFormName" class="w-full">
+                    <div class="my-2">
+                    <el-form-item label="Name Topic" prop="name" :rules="[
+                        {
+                            required: true,
+                            message:
+                                'Please enter name topic',
+                        },
+                    ]">
+                        <el-input
+                        placeholder="Name Topic"
+                        v-model="topicData.name"
+                        ></el-input>
+                    </el-form-item>
+                    </div>
+                    <div class="">
+                    <editor
+                        v-model="topicData.description"
+                        api-key="hri1xykfk0d1gnrwf70v71zn81p6f7s5e3z1edxly9mansfq"
+                        :init="{
+                        height: 600,
+                        menubar: false,
+                        plugins: [
+                            'advlist autolink lists link image charmap print preview anchor',
+                            'searchreplace visualblocks code fullscreen',
+                            'insertdatetime media table paste code help wordcount',
+                        ],
+                        toolbar:
+                            'undo redo | formatselect | bold italic backcolor | \
+                        alignleft aligncenter alignright alignjustify | \
+                        bullist numlist outdent indent | removeformat | help',
+                        visual: false,
+                        content_style: `
+                        table, th, td {
+                            border: 1px solid #000 !important;
+                        }	`,
+                        paste_data_images: true,
+                        }"
+                    />
+                    <!-- <el-form-item label="Description" prop="description" :rules="[
+                        {
+                            required: true,
+                            message:
+                                'Please enter description',
+                        },
+                    ]">
+                        <el-input
+                        type="textarea"
+                        placeholder="Description"
+                        rows="3"
+                        v-model="topicData.description"
+                        ></el-input>
+                    </el-form-item> -->
+                    </div>
+                    <div class="">
+                    <el-form-item label="Exam" prop="isExam">
+                        <el-switch v-model="topicData.isExam"></el-switch>
+                    </el-form-item>
+                    </div>
+
+                    <div class="flex justify-end items-center mt-4">
+                    <!-- <el-button plain @click="resetFeild">Cancel</el-button> -->
+                    </div>
+                </el-form>
                 <div
                     class="card w-full mt-3"
                     v-for="(data, index) in dataQuestion"
@@ -324,6 +388,7 @@
 import baseRequest from "../../../utils/baseRequest";
 import StarRating from "vue-star-rating";
 import { Input, Button, Select, Form } from "element-ui";
+import Editor from "@tinymce/tinymce-vue";
 
 export default {
     components: {
@@ -332,6 +397,7 @@ export default {
         Button,
         Select,
         Form,
+        Editor,
     },
     data() {
         return {
@@ -349,9 +415,20 @@ export default {
                     },
                 ],
             },
+            topicData: {
+                name: null,
+                description: null,
+                isExam: false
+            },
         };
     },
     methods: {
+        resetFeild() {
+            this.topicData = {
+                name: null,
+                description: null,
+            };
+        },
         pushAns(id) {
             let dataQues = this.dataQuestion.find((item) => item.id == id);
             dataQues.dataAns.push({
@@ -360,8 +437,8 @@ export default {
                 alphabet: this.alphabet[dataQues.dataAns.length].toUpperCase(),
             });
         },
-        validate(formNameItem, formNameData) {
-            if (this.$refs[formNameItem] || this.$refs[formNameData]) {
+        validate(formNameItem, formNameData, ruleFormName) {
+            if (this.$refs[formNameItem] || this.$refs[formNameData] || this.$refs[ruleFormName]) {
                 let isCheck = true;
 
                 this.$refs[formNameItem].forEach((item) => {
@@ -448,12 +525,17 @@ export default {
             );
         },
         async createQuestion() {
-            let isCheck = this.validate("ruleFormData", "ruleFormItem");
+            let isCheck = this.validate("ruleFormData", "ruleFormItem", "ruleFormName");
             if (isCheck) {
+                const requestData = {
+                    topicData: this.topicData,
+                    dataQuestion: this.dataQuestion,
+                };
+                console.log(requestData);
                 try {
                     let result = await baseRequest.post(
                         `/admin/store-question-vocabulary`,
-                        this.dataQuestion
+                        requestData
                     );
                     let { data } = result;
                     if (data.status == 200) {
@@ -462,7 +544,7 @@ export default {
                             type: "success",
                         });
                         setTimeout(() => {
-                            window.location.href = `${$Api.baseUrl}/admin/volabulary-level-test/question-list`;
+                            window.location.href = `${$Api.baseUrl}/admin/volabulary-level-test`;
                         }, 1000);
                     } else {
                         this.$message({
