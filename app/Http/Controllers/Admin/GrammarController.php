@@ -31,6 +31,7 @@ class GrammarController extends Controller
                 "message" => "Lấy danh sách topic thành công !"
             ]);
         } catch (\Exception $e) {
+            Log::error('232');
             return response()->json([
                 "status" => 400,
                 "errorCode" => 400,
