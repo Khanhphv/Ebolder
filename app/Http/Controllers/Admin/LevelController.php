@@ -35,6 +35,7 @@ class LevelController extends Controller
                 "message" => "Thêm level Thành công!"
             ]);
         } catch (\Throwable $th) {
+            Log::error("message");
             DB::rollBack();
             return response()->json([
                 "status" => 400,
