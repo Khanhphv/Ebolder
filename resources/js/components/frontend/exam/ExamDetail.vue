@@ -58,19 +58,19 @@
                 <div class="grid justify-center mt-5 gap-4 grid-cols-1 lg:grid-cols-4">
                     <div class="border-2 px-5 py-3 rounded">
                     <p class="text-center text-[14px]">Listening</p>
-                    <p  class="text-center text-[14px] rounded mt-2 w-fit mx-auto px-2 font-bold" style="background-color: #E6E8EC;">{{ result?.result_listening || "0/0" }}</p>
+                    <p  class="text-center text-[14px] rounded mt-2 w-fit mx-auto px-2 font-bold" style="background-color: #E6E8EC;">{{ result?.result_listening || `0/${listeningQuestionCount}` }}</p>
                     </div>
                     <div class="border-2 px-5 py-3 rounded">
                     <p class="text-center text-[14px]">Speaking</p>
-                    <p  class="text-center text-[14px] rounded mt-2 w-fit mx-auto px-2 font-bold" style="background-color: #E6E8EC;">{{ result?.result_speaking || "0/0" }}</p>
+                    <p  class="text-center text-[14px] rounded mt-2 w-fit mx-auto px-2 font-bold" style="background-color: #E6E8EC;">{{ result?.result_speaking || `0/${speakingQuestionCout}` }}</p>
                     </div>
                     <div class="border-2 px-5 py-3 rounded">
                     <p class="text-center text-[14px]">Reading</p>
-                    <p  class="text-center text-[14px] rounded mt-2 w-fit mx-auto px-2 font-bold" style="background-color: #E6E8EC;">{{ result?.result_reading || "0/0" }}</p>
+                    <p  class="text-center text-[14px] rounded mt-2 w-fit mx-auto px-2 font-bold" style="background-color: #E6E8EC;">{{ result?.result_reading || `0/${readingQuestionCount}` }}</p>
                     </div>
                     <div class="border-2 px-5 py-3 rounded">
                     <p class="text-center text-[14px]">Writing</p>
-                    <p  class="text-center text-[14px] rounded mt-2 w-fit mx-auto px-2 font-bold" style="background-color: #E6E8EC;">{{ result?.result_writing || "0/0" }}</p>
+                    <p  class="text-center text-[14px] rounded mt-2 w-fit mx-auto px-2 font-bold" style="background-color: #E6E8EC;">{{ result?.result_writing || `0/${writingQuestionCount}` }}</p>
                     </div>
                 </div>
                 <div class="flex justify-center mt-5 ">

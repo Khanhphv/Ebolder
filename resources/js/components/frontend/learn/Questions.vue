@@ -166,7 +166,7 @@ export default {
                 // reset data
                 this.selectedAnswers = {};
                 this.correctAnswers = {};
-                // this.questionDone = [];
+                this.questionCount = 0;
                 this.selectedIndex = 0;
 
                 this.selectedQuestion = newQuestions[this.selectedIndex];
