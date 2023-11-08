@@ -157,9 +157,8 @@ export default {
             this.selectedAnswerId = answerId;
             const rightAnswer = this.selectedQuestion.right_answers.answer_id;
 
-            if (!this.results[questionId]) {
-                this.$set(this.results, questionId, {});
-            }
+            this.$set(this.results, questionId, {});
+            
             if (answerId) {
                 this.$set(this.selectedAnswers, questionId, answerId);
                 if (answerId == rightAnswer) {

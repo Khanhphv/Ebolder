@@ -106,9 +106,7 @@ export default {
             this.selectedAnswerId = answerId;
             const rightAnswer = this.selectedQuestion.right_answers.answer_id;
 
-            if (!this.results[questionId]) {
-                this.$set(this.results, questionId, {});
-            }
+            this.$set(this.results, questionId, {});
 
             if(answerId) {
                 this.$set(this.selectedAnswers, questionId, answerId);
@@ -182,7 +180,6 @@ export default {
         questions(newQuestions) {
             if (newQuestions && newQuestions.length) {
                 // reset data
-                this.selectedAnswers = {};
                 this.correctAnswers = {};
                 this.selectedIndex = 0;
                 this.questionCount = 0;
