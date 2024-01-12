@@ -4,7 +4,7 @@
             <main-header-component 
                 :user="user" 
                 :breadcrumb="breadcrumb" 
-                :showTime="true" 
+                :showTime="true"
                 :onFinish="submit"
                 v-model="skill"
                 @handleExam="handleSelectedSkill"
@@ -36,8 +36,18 @@
                     v-if="this.skill == 'listening'" 
                     :skill="skill" 
                     @update-content="updateContent"
+                    @update-result="updateResult"
+                    @update-selected-answer="updateSelectedAnswer"
+                    @update-input-answer="updateInputAnswer"
                     />
-                <ExamDetailQuestions :questions="questions" :skill="skill" v-if="this.skill != 'listening'"/>
+                <ExamDetailQuestions
+                    :questions="questions"
+                    :skill="skill"
+                    v-if="this.skill != 'listening'"
+                    @update-result="updateResult"
+                    @update-selected-answer="updateSelectedAnswer"
+                    @update-input-answer="updateInputAnswer"
+                />
             </div>
         </div>
         <div v-show="showResult" class="flex justify-center">
@@ -56,32 +66,114 @@
                 <div class="text-xl text-center w-100 mt-2">
                     {{ new Date().toLocaleDateString()  }}
                 </div>
-                <div class="grid justify-center mt-5 gap-4 grid-cols-1 lg:grid-cols-4">
+                <div class="grid justify-center mt-5 gap-4 grid-cols-1">
                     <div class="border-2 px-5 py-3 rounded">
-                    <p class="text-center text-[14px]">Listening</p>
-                    <p  class="text-center text-[14px] rounded mt-2 w-fit mx-auto px-2 font-bold" style="background-color: #E6E8EC;">{{ result?.result_listening }}</p>
+                      <p class="text-center text-[14px]">Listening</p>
+                      <p  class="text-center text-[14px] rounded mt-2 w-fit mx-auto px-2 font-bold" style="background-color: #E6E8EC;">{{ result?.result_listening }}</p>
+                    </div>
+                    <div class="mt-3">
+                      <table class="table">
+                        <thead>
+                        <tr>
+                          <th scope="col">Topic</th>
+                          <th scope="col">No</th>
+                          <th scope="col">Result</th>
+                          <th scope="col">Your Answer</th>
+                          <th scope="col">Correct Answer</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="item in listeningQuestions">
+                          <th scope="row">{{ Number(item.topic_index) + 1 }}</th>
+                          <th scope="row">{{ Number(item.question_index) + 1 }}</th>
+                          <td>{{ getStatus(item) }}</td>
+                          <td>{{ getYourListeningAnswer(item) }}</td>
+                          <td>{{ getCorrectListeningAnswer(item) }}</td>
+                        </tr>
+                        </tbody>
+                      </table>
                     </div>
                     <div class="border-2 px-5 py-3 rounded">
                     <p class="text-center text-[14px]">Speaking</p>
                     <p  class="text-center text-[14px] rounded mt-2 w-fit mx-auto px-2 font-bold" style="background-color: #E6E8EC;">{{ result?.result_speaking }}</p>
                     </div>
+                    <div class="mt-3" v-if="speaking.data.length">
+                      <table class="table">
+                        <thead>
+                        <tr>
+                          <th scope="col">No</th>
+                          <th scope="col">Result</th>
+                          <th scope="col">Your Answer</th>
+                          <th scope="col">Correct Answer</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(item, index) in speaking.data">
+                          <th scope="row">{{ index + 1 }}</th>
+                          <td>{{ getStatus(item) }}</td>
+                          <td>{{ getYourAnswer(item) }}</td>
+                          <td>{{ getCorrectAnswer(item) }}</td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
                     <div class="border-2 px-5 py-3 rounded">
                     <p class="text-center text-[14px]">Reading</p>
                     <p  class="text-center text-[14px] rounded mt-2 w-fit mx-auto px-2 font-bold" style="background-color: #E6E8EC;">{{ result?.result_reading }}</p>
+                    </div>
+                    <div class="mt-3">
+                      <table class="table">
+                        <thead>
+                        <tr>
+                          <th scope="col">No</th>
+                          <th scope="col">Result</th>
+                          <th scope="col">Your Answer</th>
+                          <th scope="col">Correct Answer</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(item, index) in reading.data">
+                          <th scope="row">{{ index + 1 }}</th>
+                          <td>{{ getStatus(item) }}</td>
+                          <td>{{ getYourAnswer(item) }}</td>
+                          <td>{{ getCorrectAnswer(item) }}</td>
+                        </tr>
+                        </tbody>
+                      </table>
                     </div>
                     <div class="border-2 px-5 py-3 rounded">
                     <p class="text-center text-[14px]">Writing</p>
                     <p  class="text-center text-[14px] rounded mt-2 w-fit mx-auto px-2 font-bold" style="background-color: #E6E8EC;">{{ result?.result_writing }}</p>
                     </div>
+                    <div class="mt-3">
+                      <table class="table">
+                        <thead>
+                        <tr>
+                          <th scope="col">No</th>
+                          <th scope="col">Result</th>
+                          <th scope="col">Your Answer</th>
+                          <th scope="col">Correct Answer</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(item, index) in writing.data">
+                          <th scope="row">{{ index + 1 }}</th>
+                          <td>{{ getStatus(item) }}</td>
+                          <td>{{ getYourAnswer(item) }}</td>
+                          <td>{{ getCorrectAnswer(item) }}</td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
                 </div>
                 <div class="flex justify-center mt-5 ">
-                    <a href="/" class="flex py-2 cursor-pointer justify-center" style="width: 50%">
+                    <a href="#" @click="handleRedirect" class="flex py-2 cursor-pointer justify-center" style="width: 50%">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M10.5303 7.46967C10.8232 7.76256 10.8232 8.23744 10.5303 8.53033L7.06066 12L10.5303 15.4697C10.8232 15.7626 10.8232 16.2374 10.5303 16.5303C10.2374 16.8232 9.76256 16.8232 9.46967 16.5303L5.46967 12.5303C5.17678 12.2374 5.17678 11.7626 5.46967 11.4697L9.46967 7.46967C9.76256 7.17678 10.2374 7.17678 10.5303 7.46967Z" fill="#141416"/>
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M5.25 12C5.25 11.5858 5.58579 11.25 6 11.25L18 11.25C18.4142 11.25 18.75 11.5858 18.75 12C18.75 12.4142 18.4142 12.75 18 12.75L6 12.75C5.58579 12.75 5.25 12.4142 5.25 12Z" fill="#141416"/>
                     </svg>
                     <span class="ml-2">
-                        Home
+                        Quay lại
                     </span>
                     </a>
                     <a  href="/history" :class="[`flex bg-[#2162FF] py-2 rounded cursor-pointer justify-center` ]" style="width: 50%">
@@ -143,7 +235,10 @@ export default {
             listening: {},
             listeningQuestionCount: 0,
             begin: null,
-            
+            results: {},
+            selectedAnswers: {},
+            inputAnswerValues: {},
+            listeningQuestions: [],
         }
     },
     watch: {
@@ -154,6 +249,97 @@ export default {
         }
     },
     methods: {
+        handleRedirect() {
+          window.location.href = window.location.href;
+        },
+        getYourAnswer(item) {
+          const id = item.id;
+          const answers = item.answers;
+          if (item.type === 1) {
+            const answerId = this.selectedAnswers[id];
+            const answer = answers.find((el) => {
+              return el.answer_id === answerId;
+            });
+            return answer?.text;
+          } else {
+            return this.inputAnswerValues[id] ?? '';
+          }
+        },
+        getCorrectAnswer(item) {
+          if(item.answers?.length === 1) {
+            return item.answers[0]?.text
+          } else {
+            const answerId = item.right_answers?.answer_id;
+            const answer = item.answers.find((el) => {
+              return el.answer_id === answerId;
+            });
+
+            return answer?.text;
+          }
+        },
+        getCorrectListeningAnswer(item) {
+          if(item.answer_listening?.length === 1) {
+            return item.answer_listening[0].text
+          } else {
+            const answerId = item.right_answers.answer_id;
+            const answer = item.answer_listening.find((el) => {
+              return el.answer_id === answerId;
+            });
+
+            return answer.text;
+          }
+        },
+        getYourListeningAnswer(item) {
+          const id = item.id;
+          const answers = item.answer_listening;
+          if (item.type === 1) {
+            const answerId = this.selectedAnswers[id];
+            const answer = answers.find((el) => {
+              return el.answer_id === answerId;
+            });
+            return answer?.text;
+          } else {
+            return this.inputAnswerValues[id] ?? '';
+          }
+        },
+        getStatus(item) {
+          const status = this.results[item.id] ?? false;
+          console.log(status);
+
+          return status ? 'Right Answer' : 'Wrong Answer';
+        },
+        async getListeningQuestions() {
+          let questions = [];
+          for (let [index, item] of Object.entries(this.listening.data)) {
+            try {
+              let rs = await baseRequest.get(`/admin/get-detail-audio-question-listening/${item.id}`);
+              if (rs.data.status == 200) {
+                const data = rs.data.data;
+                if (data) {
+                  let listenQuestions = data?.question_listening;
+                  for (let i = 0; i < listenQuestions.length; i++) {
+                    listenQuestions[i]['topic_index'] = index;
+                    listenQuestions[i]['question_index'] = i;
+                  }
+                  questions = questions.concat(listenQuestions);
+                }
+              }
+            } catch (e) {
+            } finally {
+            }
+          }
+          this.listeningQuestions = questions;
+        },
+        updateResult(questionId, answer) {
+          console.log('ddd');
+          this.results[questionId] = answer;
+        },
+        updateSelectedAnswer(questionId, answerId) {
+          this.selectedAnswers[questionId] = answerId;
+        },
+        updateInputAnswer(questionId, text) {
+          this.inputAnswerValues[questionId] = text;
+        },
         completion_time(mili) {
             return $Helper.millisToMinutesAndSeconds(mili);
         },
@@ -391,6 +577,7 @@ export default {
         this.begin = Date.now();
         await this.getExamDetail();
         await this.getListeningExam();
+        await this.getListeningQuestions();
         Promise.all([
             this.getReadingExam(),
             this.getSpeakingExam(),

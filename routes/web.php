@@ -145,5 +145,5 @@ Route::middleware(['checkLogin'])->group(function () {
         Route::get('/level', 'Admin\LevelController@index')->name('level-list')->middleware('can:Level_List');
 
     });
-    
+
 });

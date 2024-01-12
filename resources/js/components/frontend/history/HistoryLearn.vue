@@ -1,6 +1,6 @@
 <template>
     <div class="w-full h-[100vh] overflow-y-scroll">
-      <header-component :user="user" />
+      <header-component :user="user" @openDialog="openDialog" />
       <div class="w-full mt-4">
         <div class="container">
           <div class="block" v-if="data.length > 0">
@@ -82,16 +82,22 @@
           </div>
         </div>
       </div>
+      <popup-dialog :dialogVisible="dialogVisible" @onClose="dialogVisible = false" />
     </div>
   </template>
   <script>
   export default {
     props: ["data", "user"],
     data() {
-      return {};
+      return {
+        dialogVisible: false,
+      };
     },
     computed: {},
     methods: {
+      openDialog() {
+        this.dialogVisible = true;
+      },
       completion_time(mili) {
         return $Helper.millisToMinutesAndSeconds(mili);
       },

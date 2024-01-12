@@ -157,14 +157,17 @@ export default {
             this.selectedAnswerId = answerId;
             const rightAnswer = this.selectedQuestion.right_answers.answer_id;
 
+            this.$emit('update-selected-answer', questionId, answerId);
             this.$set(this.results, questionId, {});
             
             if (answerId) {
                 this.$set(this.selectedAnswers, questionId, answerId);
                 if (answerId == rightAnswer) {
                     this.results[questionId][answerId] = true;
+                    this.$emit('update-result', questionId, true);
                 } else {
                     this.results[questionId][answerId] = false;
+                    this.$emit('update-result', questionId, false);
                 }
             }
             this.saveResult();
@@ -178,7 +181,8 @@ export default {
             const rightAnswer = question.answer_listening[inputIndex].text.toLowerCase().trim();
             const inputText = event.target.value ? event.target.value.toLowerCase().trim() : '';
             const questionId = question.id;
-            // store value of each input
+            this.$emit('update-input-answer', questionId, inputText);
+          // store value of each input
             this.$set(this.inputAnswerValues, `${elementIndex}${question.id}`, event.target.value)
             
             if (!this.results[questionId]) {
@@ -187,8 +191,10 @@ export default {
             
             if(rightAnswer == inputText) {
                 this.results[questionId][answerId] = true;
+                this.$emit('update-result', questionId, true);
             } else {
                 this.results[questionId][answerId] = false;
+                this.$emit('update-result', questionId, false);
             }
 
             if(event.target.value || event.target.value != '' ) {

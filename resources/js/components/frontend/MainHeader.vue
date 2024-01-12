@@ -106,7 +106,7 @@ export default {
             timeWork: 0,
             showClock: this.showTime || false,
             timerun: 0,
-            action: null,
+            action: 'Next',
             skills: [
                 'Listening', 'Speaking', 'Reading', 'Writing'
             ],

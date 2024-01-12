@@ -28,8 +28,8 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="https://117.0.36.6:5000/ " target="_blank" class="px-3 py-2 flex items-center text-lg leading-snug hover:opacity-75 cursor-pointer">
-                  Pronunciation Link
+                <a href="#" @click="$emit('openDialog')" class="px-3 py-2 flex items-center text-lg leading-snug hover:opacity-75 cursor-pointer">
+                  Pronunciation Links
                 </a>
               </li>
             </ul>
@@ -65,7 +65,6 @@
         </div>
       </nav>
     </div>
-
   </div>
 </template>
 <script>
@@ -110,5 +109,11 @@ li.nav-item:hover {
   color: white;
   background: #2162ff;
   border-radius: 30px;
+}
+.dialog-abc {
+  z-index: 999999 !important;
+}
+.el-dialog__wrapper {
+  z-index: 999999 !important;
 }
 </style>

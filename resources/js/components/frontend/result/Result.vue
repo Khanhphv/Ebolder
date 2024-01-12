@@ -1,6 +1,6 @@
 <template>
   <div class="w-full relative">
-    <header-component :user="user" />
+    <header-component :user="user" @openDialog="openDialog" />
     <div class="container w-full content relative">
       <div
         class="w-full flex flex-col justify-center items-center gap-4 mt-4 mb-12"
@@ -43,6 +43,7 @@
         </div>
       </div>
     </div>
+    <popup-dialog :dialogVisible="dialogVisible" @onClose="dialogVisible = false" />
   </div>
 </template>
   <script>
@@ -51,10 +52,15 @@ import baseRequest from "../../../utils/baseRequest";
 export default {
   props: ["data", "user"],
   data() {
-    return {};
+    return {
+      dialogVisible: false,
+    };
   },
   components: {},
   methods: {
+    openDialog() {
+      this.dialogVisible = true;
+    },
     dongMoPopup(value) {
       this.show = value;
     },

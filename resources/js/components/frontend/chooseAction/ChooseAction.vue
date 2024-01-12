@@ -1,6 +1,6 @@
 <template>
   <div class="w-full h-[100vh] overflow-y-scroll">
-    <header-component :user="user" />
+    <header-component :user="user" @openDialog="openDialog" />
     <div class="w-full mt-4">
       <div class="container">
         <div class="flex items-center justify-between flex-col lg:flex-row gap-5">
@@ -9,15 +9,21 @@
         </div>
       </div>
     </div>
+    <popup-dialog :dialogVisible="dialogVisible" @onClose="dialogVisible = false" />
   </div>
 </template>
 <script>
 export default {
   data() {
-    return {};
+    return {
+      dialogVisible: false,
+    };
   },
   computed: {},
   methods: {
+    openDialog() {
+      this.dialogVisible = true;
+    },
     openNewPage(type){
         if(type === 1){
             window.location.href = `${$Api.baseUrl}/learn`;

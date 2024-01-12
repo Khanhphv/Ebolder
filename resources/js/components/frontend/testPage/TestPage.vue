@@ -1,6 +1,6 @@
 <template>
     <div class="w-full">
-        <header-component :user="user" />
+        <header-component :user="user" @openDialog="openDialog" />
         <div class="w-full mt-[37px] mb-[64px] max-w-[768px] mx-auto">
             <div class="grid grid-cols-2 gap-4">
                 <div
@@ -30,15 +30,21 @@
             </div>
         </div>
         <footer-component />
+        <popup-dialog :dialogVisible="dialogVisible" @onClose="dialogVisible = false" />
     </div>
 </template>
 <script>
 export default {
     data() {
-        return {};
+        return {
+          dialogVisible: false,
+        };
     },
     props: ["user"],
     methods: {
+        openDialog() {
+          this.dialogVisible = true;
+        },
         openLink(url) {
             window.location.href = `${$Api.baseUrl}/english-level-test/${url}`;
         },

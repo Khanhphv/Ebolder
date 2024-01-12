@@ -34,7 +34,7 @@
                 <p class="font-semibold" id="question">
                     <span v-for="(item, index) in handleQuestionWithInput(selectedQuestion)" :key="'div' + selectedQuestion?.id  + index">
                         <span v-if="item !== '#'" :key="'span' + index">{{ item }}</span>
-                        <input v-else type="text" 
+                        <input v-else type="text"
                             @input="(event) => handleAnswerInput(event, selectedQuestion, index)"
                             v-model="inputAnswerValues[`${index}${selectedQuestion?.id}`]"
                             maxlength="255"
@@ -49,7 +49,7 @@
                                 lg:w-[75px]
                                 px-2
                                 py-1
-                            " 
+                            "
                             :key="'input' + index"
                             :id="'input' + selectedQuestion?.id + index"
                             />
@@ -115,8 +115,9 @@ export default {
             inputAnswersByQuestion: {},
             inputAnswers: {},
             inputAnswerValues: {},
+            typingAnswers: {},
             results: {},
-            answerEachInputQuestion: {}
+            answerEachInputQuestion: {},
         }
     },
     methods: {
@@ -160,11 +161,12 @@ export default {
             const questionId = question.id;
             // store value of each input
             this.$set(this.inputAnswerValues, `${elementIndex}${question.id}`, event.target.value)
+            this.$set(this.typingAnswers, questionId, event.target.value)
 
             if (!this.results[questionId]) {
                 this.$set(this.results, questionId, {});
             }
-            
+
             if(rightAnswer == inputText) {
                 this.results[questionId][answerId] = true;
             } else {
@@ -228,7 +230,7 @@ export default {
                 }
             })
             const correctAnswers = _results && _results.filter(val => val === true).length;
-            this.onSubmit(correctAnswers, this.questionCount);
+            this.onSubmit(correctAnswers, this.questionCount, this.results, this.selectedAnswers, this.typingAnswers);
         },
         customAudio() {
             const playerButton = document.querySelector(".player-button"),

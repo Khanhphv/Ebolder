@@ -1,7 +1,7 @@
 <template>
   <div class="w-full" style="height: 100vh; overflow-y: scroll">
     <div class="w-full h-full">
-      <header-component :user="user" />
+      <header-component :user="user" @openDialog="openDialog" />
       <div class="w-full max-w-[1206px] mx-auto lg:p-4 p-2">
         <a href="/learn" style="text-decoration: none" v-show="!isShowLabel">
           <button
@@ -378,7 +378,7 @@
         </div>
       </div>
     </div>
-
+    <popup-dialog :dialogVisible="dialogVisible" @onClose="dialogVisible = false" />
     <!-- <footer-component /> -->
   </div>
 </template>
@@ -393,6 +393,7 @@ export default {
   props: ["data", "user", "query", "request"],
   data() {
     return {
+      dialogVisible: false,
       answerData: [],
       topic: {},
 
@@ -415,6 +416,9 @@ export default {
   },
   computed: {},
   methods: {
+    openDialog() {
+      this.dialogVisible = true;
+    },
     async submit() {
       this.$refs.countdown.abort();
       this.topic.questions.forEach((item, index) => {

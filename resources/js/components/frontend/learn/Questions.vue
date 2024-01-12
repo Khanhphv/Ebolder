@@ -29,7 +29,7 @@
                                     lg:w-[75px]
                                     px-2
                                     py-1
-                                " 
+                                "
                                 :key="'input' + index"
                                 :id="'input' + selectedQuestion?.id + index"
                         />
@@ -38,7 +38,7 @@
             </div>
             <!-- , 'border-[#E6E8EC]': isQuestionAnswered(answer?.id, selectedQuestion?.id) == false -->
             <div class="flex-grow" v-show="selectedQuestion?.type == 1">
-                <div v-for="(answer, index) in selectedQuestion?.answers" :key="index" class="rounded-[8px] border-2 p-3 mb-3" 
+                <div v-for="(answer, index) in selectedQuestion?.answers" :key="index" class="rounded-[8px] border-2 p-3 mb-3"
                     :class="[isQuestionAnswered(answer?.id, selectedQuestion?.id) ? `border-${lessonType} radio-${lessonType}` : ''] "
                     @click="handleSelectAnswer(answer?.id, selectedQuestion?.id)">
                     <input type="radio" :id="`test${answer?.id}`" :value="answer?.id" :checked="isQuestionAnswered(answer?.id, selectedQuestion?.id)" />
@@ -91,6 +91,7 @@ export default {
             questionDone: {},
             inputAnswersByQuestion: {},
             inputAnswers: {},
+            typingAnswers: {},
             answerEachInputQuestion: {},
             results: {},
             arrowLeft: require('../../../../../public/images/learn/arrow-left.svg'),
@@ -121,7 +122,7 @@ export default {
             }
             this.questionDone[questionId] = true;
             this.isQuestionAnswered(answerId, questionId);
-            
+
         },
         handleQuestionWithInput(question) {
             const type = question?.type;
@@ -142,11 +143,12 @@ export default {
             const questionId = question.id;
             // store value of each input
             this.$set(this.inputAnswerValues, `${elementIndex}${question.id}`, event.target.value)
-            
+            this.$set(this.typingAnswers, questionId, event.target.value)
+
             if (!this.results[questionId]) {
                 this.$set(this.results, questionId, {});
             }
-            
+
             if(rightAnswer == inputText) {
                 this.results[questionId][answerId] = true;
             } else {
@@ -178,7 +180,7 @@ export default {
                 }
             })
             const correctAnswers = _results && _results.filter(val => val === true).length;
-            this.onSubmit(correctAnswers, this.questionCount);
+            this.onSubmit(correctAnswers, this.questionCount, this.results, this.selectedAnswers, this.typingAnswers);
         },
     },
     watch: {

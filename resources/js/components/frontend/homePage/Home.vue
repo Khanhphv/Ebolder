@@ -4,7 +4,7 @@
             <!-- background image -->
         </div>
         <div class="xl:w-[62.5%] w-[95%] mx-auto">
-            <header-component :user="user" />
+            <header-component :user="user" @openDialog="openDialog" />
         </div>
         <div class="xl:w-[62.5%] w-[95%] mx-auto  my-[16px] xl:my-[48px]">
             <h2 class="text-[37px] sm:text-[50px] font-normal leading-[120%]">
@@ -26,11 +26,17 @@
                 <div
                     class="rounded-tl-[16px] rounded-tr-[56px] rounded-br-[16px] rounded-bl-[16px] border-2 border-solid border-[#F4F5F6] bg-[#FFF] p-12 flex flex-col justify-between">
                     <div>
-                        <h2 class="text-[22px] font-semibold mb-4">English collection</h2>
-                        <p class="text-[16px] font-light">
-                            Collection of new types of English problems, intuitive interface system that is easy to use and
-                            suitable for all ages.
-                        </p>
+                        <h2 class="text-[22px] font-semibold mb-4">What can an A2-level learner of English do?</h2>
+                        <div class="text-[16px] font-light">
+                          <span class="font-normal">
+                            Learners who achieve A2 Pre-intermediate level:
+                          </span>
+                          <ul style="list-style: disc; margin-left: 20px;">
+                            <li class="mt-3">can understand sentences and common expressions about familiar topics, including very basic personal and family information, shopping, places of interest and work</li>
+                            <li class="mt-3">can communicate in simple, everyday tasks that require only simple and direct exchanges of information on familiar topics</li>
+                            <li class="mt-3">can describe aspects of their past, environment and matters related to their immediate needs, using simple language.</li>
+                          </ul>
+                        </div>
                     </div>
                     <div class="flex justify-between items-center mt-12 cursor-pointer" @click="openLink">
                         <img :src="viewMore1" />
@@ -39,12 +45,18 @@
                 <div
                     class="rounded-tl-[16px] rounded-tr-[56px] rounded-br-[16px] rounded-bl-[16px] border-2 border-solid border-[#F4F5F6] bg-[#FFF] p-12 flex flex-col justify-between">
                     <div>
-                        <h2 class="text-[22px] font-semibold mb-4">Four Test Modules</h2>
-                        <p class="text-[16px] font-light">
-                            The set of four test modules includes Listening, Reading, Vocabulary, Grammar, providing all
-                            types
-                            of questions.
-                        </p>
+                        <h2 class="text-[22px] font-semibold mb-4">What can a B1-level learner of English do?</h2>
+                        <div class="text-[16px] font-light">
+                          <span class="font-normal">
+                            Learners who achieve B1 Intermediate level:
+                          </span>
+                          <ul style="list-style: disc; margin-left: 20px;">
+                            <li class="mt-3">can understand the main points of clear texts on familiar topics in standard language</li>
+                            <li class="mt-3">can manage most situations on a trip to places where English is used</li>
+                            <li class="mt-3">can produce simple, organised texts about familiar topics</li>
+                            <li class="mt-3">can describe experiences, events, wishes and aspirations, and explain opinions and plans.</li>
+                          </ul>
+                        </div>
                     </div>
                     <div class="flex justify-between items-center mt-12 cursor-pointer" @click="openLink">
                         <img :src="viewMore2" />
@@ -53,10 +65,17 @@
                 <div
                     class="rounded-tl-[16px] rounded-tr-[56px] rounded-br-[16px] rounded-bl-[16px] border-2 border-solid border-[#F4F5F6] bg-[#FFF] p-12 flex flex-col justify-between">
                     <div>
-                        <h2 class="text-[22px] font-semibold mb-4">Experienced Test Prep</h2>
-                        <p class="text-[16px] font-light">
-                            The test set is prepared by an English teacher with many years of experience in teaching.
-                        </p>
+                        <h2 class="text-[22px] font-semibold mb-4">What can a B2-level learner of English do?</h2>
+                        <div class="text-[16px] font-light">
+                          <span class="font-normal">
+                            Learners who achieve B2 Upper intermediate level:
+                          </span>
+                          <ul style="list-style: disc; margin-left: 20px;">
+                            <li class="mt-3">can understand the main ideas of complex texts on concrete or abstract topics, including some technical discussions</li>
+                            <li class="mt-3">can express themselves fluently and spontaneously enough to comfortably communicate with other English speakers</li>
+                            <li class="mt-3">can produce clear, detailed text on many subjects and explain a complex viewpoint on a topic, including expressing advantages and disadvantages.</li>
+                          </ul>
+                        </div>
                     </div>
                     <div class="flex justify-between items-center mt-12 cursor-pointer" @click="openLink">
                         <img :src="viewMore3" />
@@ -65,13 +84,10 @@
             </div>
         </div>
         <div class="w-full my-[16px] xl:my-[48px]">
-            <h2 class="text-[28px] xl:text-[42px] font-semibold leading-[120%] text-center my-[16px] xl:my-[48px]">
-                <p class="text-center">Make faster, easier...</p>
-            </h2>
             <div class="xl:w-[62.5%] w-[95%] mx-auto grid md:grid-cols-3 gap-4 grid-cols-1">
-                <img class="m-auto" :src="dictionary" />
-                <img class="m-auto" :src="pronunciation" />
-                <img class="m-auto" :src="games" />
+                <img class="m-auto custom-image" :src="dictionary" />
+                <img class="m-auto custom-image" :src="pronunciation" />
+                <img class="m-auto custom-image" :src="games" />
             </div>
         </div>
         <div class="w-full  my-[16px] xl:my-[48px]">
@@ -132,6 +148,7 @@
         <div class="md:mt-[100px] mt-[80px] xl:w-[62.5%] w-[95%] mx-auto  ">
             <footer-component />
         </div>
+      <popup-dialog :dialogVisible="dialogVisible" @onClose="dialogVisible = false" />
     </div>
 </template>
 <script>
@@ -164,9 +181,9 @@ export default {
             reality: require('../../../../../public/images/landing/reality.svg'),
             knowledge: require('../../../../../public/images/landing/knowledge.svg'),
             route: require('../../../../../public/images/landing/route.svg'),
-            games: require('../../../../../public/images/landing/games.svg'),
-            pronunciation: require('../../../../../public/images/landing/pronunciation.svg'),
-            dictionary: require('../../../../../public/images/landing/dictionary.svg'),
+            games: require('../../../../../public/images/landing/circle.jpg'),
+            pronunciation: require('../../../../../public/images/landing/book.png'),
+            dictionary: require('../../../../../public/images/landing/learn.jpg'),
             viewMore1: require('../../../../../public/images/landing/view-more1.svg'),
             viewMore2: require('../../../../../public/images/landing/view-more2.svg'),
             viewMore3: require('../../../../../public/images/landing/view-more3.svg'),
@@ -175,10 +192,14 @@ export default {
             background: require('../../../../../public/images/landing/background.svg'),
             openTab: 1,
             activeColor: "#2162FF",
-            levels: []
+            levels: [],
+            dialogVisible: false,
         };
     },
     methods: {
+        openDialog() {
+          this.dialogVisible = true;
+        },
         async getAllLevels()  {
             this.isLoading = true;
             try {
@@ -261,6 +282,10 @@ body {
 
 .icon-shadow {
     box-shadow: 0px 40px 80px -20px #1313131A;
+}
+.custom-image {
+  height: 100% !important;
+  width: auto !important;
 }
 
 @media only screen and (min-width: 1280px) {

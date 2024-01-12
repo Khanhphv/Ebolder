@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <header-component :user="user" />
+    <header-component :user="user" @openDialog="openDialog" />
     <div class="w-full max-w-[1206px] mx-auto p-4">
       <div
         class="bg-blur-f lg:px-[48px] lg:py-[48px] px-[16px] py-[16px]"
@@ -352,6 +352,7 @@
       </button>
     </div>
 
+    <popup-dialog :dialogVisible="dialogVisible" @onClose="dialogVisible = false" />
     <!-- <footer-component /> -->
   </div>
 </template>
@@ -375,6 +376,7 @@ export default {
       timeWork: 45 * 60 * 1000,
       timerun: 0,
       baseURl: $Api.baseUrl,
+      dialogVisible: false,
     };
   },
   components: {
@@ -385,6 +387,9 @@ export default {
     VueCountdown,
   },
   methods: {
+    openDialog() {
+      this.dialogVisible = true;
+    },
     async submit() {
       if (this.questions.length > 0 || this.request.exam) {
         this.$refs.countdown.abort();

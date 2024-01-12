@@ -15,7 +15,7 @@
       <div class="flex max-h-full sidebar z-10 border-r-2" :class="[!open ? 'hidden' : ' w-[350px] block']" >
         <!-- Sidebar -->
         <div class="flex w-full overflow-auto">
-          
+
           <!-- Sidebar Content -->
             <div ref="content" class="bg-white  listLesson"
             :class="[open ? 'w-[350px]' : 'w-0 hidden']">
@@ -54,14 +54,56 @@
               <p  class="text-center text-[14px] rounded mt-2 px-2 font-bold" style="background-color: #E6E8EC;">{{ scores }}</p>
             </div>
           </div>
+          <div v-if="this.lessonType != 'listening'" class="mt-3">
+            <table class="table">
+              <thead>
+              <tr>
+                <th scope="col">No</th>
+                <th scope="col">Result</th>
+                <th scope="col">Your Answer</th>
+                <th scope="col">Correct Answer</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="(item, index) in lessonQuestions">
+                <th scope="row">{{ index + 1 }}</th>
+                <td>{{ getStatus(item) }}</td>
+                <td>{{ getYourAnswer(item) }}</td>
+                <td>{{ getCorrectAnswer(item) }}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div v-if="this.lessonType == 'listening'" class="mt-3">
+            <table class="table">
+              <thead>
+              <tr>
+                <th scope="col">Topic</th>
+                <th scope="col">No</th>
+                <th scope="col">Result</th>
+                <th scope="col">Your Answer</th>
+                <th scope="col">Correct Answer</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="item in listeningQuestions">
+                <th scope="row">{{ Number(item.topic_index) + 1 }}</th>
+                <td>{{ Number(item.question_index) + 1 }}</td>
+                <td>{{ getStatus(item) }}</td>
+                <td>{{ getYourListeningAnswer(item) }}</td>
+                <td>{{ getCorrectListeningAnswer(item) }}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
           <div class="flex justify-center mt-5 ">
-            <a href="/" class="flex py-2 cursor-pointer justify-center" style="width: 50%">
+            <a href="#" @click="handleRedirect" class="flex py-2 cursor-pointer justify-center" style="width: 50%">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M10.5303 7.46967C10.8232 7.76256 10.8232 8.23744 10.5303 8.53033L7.06066 12L10.5303 15.4697C10.8232 15.7626 10.8232 16.2374 10.5303 16.5303C10.2374 16.8232 9.76256 16.8232 9.46967 16.5303L5.46967 12.5303C5.17678 12.2374 5.17678 11.7626 5.46967 11.4697L9.46967 7.46967C9.76256 7.17678 10.2374 7.17678 10.5303 7.46967Z" fill="#141416"/>
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M5.25 12C5.25 11.5858 5.58579 11.25 6 11.25L18 11.25C18.4142 11.25 18.75 11.5858 18.75 12C18.75 12.4142 18.4142 12.75 18 12.75L6 12.75C5.58579 12.75 5.25 12.4142 5.25 12Z" fill="#141416"/>
               </svg>
               <span class="ml-2">
-                Home
+                Quay lại
               </span>
             </a>
             <a  href="/history" :class="[`flex bg-${lessonType} py-2 rounded cursor-pointer justify-center` ]" style="width: 50%">
@@ -121,7 +163,11 @@ export default {
       breadcrumb: [
         { label: 'Study', icon: ExamIcon },
       ],
-      selectedLessonName: ''
+      selectedLessonName: '',
+      results: [],
+      selectedAnswers: {},
+      inputAnswerValues: {},
+      listeningQuestions: [],
     };
   },
   watch: {
@@ -132,6 +178,85 @@ export default {
     }
     },
   methods: {
+    handleRedirect() {
+      window.location.href = window.location.href;
+    },
+    async getAudioDetail(audioId) {
+      try {
+        let rs = await baseRequest.get(`/admin/get-detail-audio-question-listening/${audioId}`);
+        if (rs.data.status == 200) {
+          const data = rs.data.data;
+          if (data) {
+            return data?.question_listening;
+          }
+          return null;
+        }
+        return null;
+      } catch (e) {
+      } finally {
+      }
+    },
+    getYourAnswer(item) {
+      const id = item.id;
+      const answers = item.answers;
+      if (item.type === 1) {
+        const answerId = this.selectedAnswers[id];
+        const answer = answers.find((el) => {
+          return el.answer_id === answerId;
+        });
+        return answer?.text;
+      } else {
+        return this.inputAnswerValues[id] ?? '';
+      }
+    },
+    getCorrectAnswer(item) {
+      if(item.answers?.length === 1) {
+        return item.answers[0].text
+      } else {
+        const answerId = item.right_answers.answer_id;
+        const answer = item.answers.find((el) => {
+          return el.answer_id === answerId;
+        });
+
+        return answer.text;
+      }
+    },
+    getCorrectListeningAnswer(item) {
+      if(item.answer_listening?.length === 1) {
+        return item.answer_listening[0].text
+      } else {
+        const answerId = item.right_answers.answer_id;
+        const answer = item.answer_listening.find((el) => {
+          return el.answer_id === answerId;
+        });
+
+        return answer.text;
+      }
+    },
+    getYourListeningAnswer(item) {
+      const id = item.id;
+      const answers = item.answer_listening;
+      if (item.type === 1) {
+        const answerId = this.selectedAnswers[id];
+        const answer = answers.find((el) => {
+          return el.answer_id === answerId;
+        });
+        return answer?.text;
+      } else {
+        return this.inputAnswerValues[id] ?? '';
+      }
+    },
+    getStatus(item) {
+      const result = this.results[item.id] ?? [];
+      let keys = Object.keys(result);
+      if (keys.length > 0) {
+        let firstKey = keys[0];
+        let status = result[firstKey];
+        console.log(status);
+        return status ? 'Right Answer' : 'Wrong Answer';
+      }
+      return 'Wrong Answer';
+    },
     formatResultTime(mili) {
       return $Helper.millisToMinutesAndSeconds(mili);
     },
@@ -157,7 +282,7 @@ export default {
             speaking: rs.data.data?.speak,
             vocabulary: rs.data.data?.vocabulary,
           };
-          
+
           if (data) {
             this.listLevel = data[this.lessonType];
           }
@@ -222,7 +347,11 @@ export default {
         loading.close();
       }
     },
-    async submit(correctAnswers, questionCount) {
+    async submit(correctAnswers, questionCount, results, selectedAnswers, inputAnswerValues) {
+      this.results = results;
+      this.selectedAnswers = selectedAnswers;
+      this.inputAnswerValues = inputAnswerValues;
+      console.log(this.inputAnswerValues);
       this.scores = `${correctAnswers}/${questionCount}`;
       const requestParams = {
         test_type: this.query.skill ?? '',
@@ -251,6 +380,30 @@ export default {
       let newData = this.lessonQuestions.find(item => item.id === audioId);
       this.lessonContent.description = newData.content;
     },
+    async getListeningQuestions() {
+      let questions = [];
+      if (this.lessonType === 'listening') {
+        for (let [index, item] of Object.entries(this.lessonQuestions)) {
+          try {
+            let rs = await baseRequest.get(`/admin/get-detail-audio-question-listening/${item.id}`);
+            if (rs.data.status == 200) {
+              const data = rs.data.data;
+              if (data) {
+                let listenQuestions = data?.question_listening;
+                for (let i = 0; i < listenQuestions.length; i++) {
+                  listenQuestions[i]['topic_index'] = index;
+                  listenQuestions[i]['question_index'] = i;
+                }
+                questions = questions.concat(listenQuestions);
+              }
+            }
+          } catch (e) {
+          } finally {
+          }
+        }
+      }
+      this.listeningQuestions = questions;
+    }
   },
   async created() {
     const { skill, levelId, levelName } = this.query;
@@ -264,11 +417,14 @@ export default {
     }]
     this.begin = Date.now();
     await this.getDetailLevel();
-    await this.getLessonDetail(this.listLevel[0]?.id, this.listLevel[0]?.name)
+    await this.getLessonDetail(this.listLevel[0]?.id, this.listLevel[0]?.name);
+    await this.getListeningQuestions();
   },
   async mounted() {
     let x = await localStorage.getItem('section-list-show')
     this.open = Number(x)
+  },
+  computed: {
   }
 };
 </script>
@@ -368,4 +524,3 @@ export default {
     display: block;
   }
 }</style>
-  

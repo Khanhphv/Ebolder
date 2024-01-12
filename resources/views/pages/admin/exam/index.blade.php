@@ -8,7 +8,7 @@
                         <i class="fa-solid fa-chart-simple icon-gradient bg-mean-fruit"></i>
                     </div>
                     <div>
-                        <p>Exam Management</p>
+                        <p>Tests Management</p>
                     </div>
 
                 </div>

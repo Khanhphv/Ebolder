@@ -1,6 +1,6 @@
 <template>
     <div class="w-full">
-        <header-component :user="user" />
+        <header-component :user="user" @openDialog="openDialog" />
         <div class="w-full max-w-[1206px] mx-auto p-4">
             <div class="bg-blur-f p-[8px] lg:px-[48px] lg:py-[48px]" v-show="isShowLabel || !request.exam">
                 <h2
@@ -601,6 +601,7 @@
             </div>
         </div>
 
+        <popup-dialog :dialogVisible="dialogVisible" @onClose="dialogVisible = false" />
         <!-- <footer-component /> -->
     </div>
 </template>
@@ -615,6 +616,7 @@ export default {
   props: ["data", "query", "user", "request"],
   data() {
     return {
+      dialogVisible: false,
       answerData: [],
       topic: [],
 
@@ -643,6 +645,9 @@ export default {
     },
   },
   methods: {
+    openDialog() {
+      this.dialogVisible = true;
+    },
     async submit() {
       this.$refs.countdown.abort();
       this.topic.forEach((itemTopic) => {

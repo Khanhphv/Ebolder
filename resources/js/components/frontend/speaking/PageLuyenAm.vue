@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <header-component :user="user" />
+    <header-component :user="user" @openDialog="openDialog" />
     <div class="w-full max-w-[1206px] mx-auto p-4">
       <div
         class="bg-blur-f lg:px-[48px] lg:py-[48px] px-[16px] py-[16px]"
@@ -172,6 +172,7 @@
      </button>
     </div>
 
+    <popup-dialog :dialogVisible="dialogVisible" @onClose="dialogVisible = false" />
     <!-- <footer-component /> -->
   </div>
 </template>
@@ -193,12 +194,16 @@ export default {
       file: null,
       audio_src: null,
       isSaved: false,
+      dialogVisible: false,
     };
   },
   components: {
     VueCountdown,
   },
   methods: {
+    openDialog() {
+      this.dialogVisible = true;
+    },
     handleCountdownProgress(data) {
       this.timerun = this.timeWork - data.totalMilliseconds + 1000;
       if (this.timerun === this.timeWork) {
